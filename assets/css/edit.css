@@ -1,3 +1,9 @@
+body {
+  max-width: 600px;
+  padding: 60px;
+  margin: 0 auto;
+}
+
 .stars span {
   display: flex;
   flex-direction: row-reverse;
@@ -19,4 +25,40 @@
 .stars label:hover ~ label,
 .stars input[type="radio"]:checked ~ label {
   color: #f8c601;
+}
+
+.itemcontainer {
+  display: flex;
+  align-items: baseline;
+}
+
+.itemcontainer p {
+  width: 20%;
+}
+
+.itemcontainer input {
+  width: 80%;
+}
+
+.hissu {
+  background-color: red;
+  color: #fff;
+  margin-left: 10px;
+  padding: 3px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+input[type="submit"] {
+  background-color: #f79428;
+  color: #fff;
+  border: none;
+  padding: 5px 20px;
+  font-size: 18px;
+}
+input[type="submit"]:hover {
+  opacity: 0.5;
+}
+.btn {
+  margin-top: 60px;
+  text-align: center;
 }

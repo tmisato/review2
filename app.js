@@ -35,7 +35,7 @@ app.get("/", function (req, res) {
     con.query(sql, function (err, result, fields) {
       if (err) console.error(err);
 
-      res.render("index", { personas: result }); 
+      res.render("index", { personas: result });
     });
   });
 });
@@ -72,7 +72,7 @@ app.get("/", function (req, res) {
           return a.rating - b.rating;
         });
       }
-      res.render("index", { personas: result }); 
+      res.render("index", { personas: result });
     });
   });
 });
