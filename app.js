@@ -20,6 +20,48 @@ app.use(express.static(path.join(__dirname, "assets")));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+app.get('/', function(req, res) {
+  con.connect(function(err) {
+    if (err) throw err;
+    console.log('Connected');
+
+    const selectedValue = req.query.sort;
+    let sql = "SELECT * FROM personas";
+
+    if (selectedValue === '2') {
+      sql += " ORDER BY rating DESC";
+    }
+
+    if (selectedValue === '3') {
+      sql += " ORDER BY rating ASC";
+    }
+
+    con.query(sql, function (err, result, fields) {
+      if (err) console.error(err);
+      // console.log(result);
+
+      // 評価が高い順で並び替え
+      if (selectedValue === '2') {
+        result.sort(function(a, b) {
+          return b.rating - a.rating;
+        });
+      }
+
+      // 評価が高い順で並び替え
+      if (selectedValue === '3') {
+        result.sort(function(a, b) {
+          return a.rating - b.rating;
+        });
+      }
+
+      res.render('index', { personas: result }); // 結果をテンプレートに渡す
+    });
+  });
+});
+
+
+
 app.get("/", (req, res) => {
   const sql = "select * from personas";
   con.query(sql, function (err, result, fields) {

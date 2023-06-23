@@ -5,7 +5,7 @@
         <title>User list</title>
         <link type="text/css" rel="stylesheet" href="css/style.css">
     </head>
-    <body> 購入者年代別グラフ<canvas id="stage"></canvas>
+    <body> 購入者年代別グラフ <canvas id="stage"></canvas>
         <div class="function">
             <div>
                 <label for="sort">並び替え</label>
@@ -29,7 +29,6 @@
         <ul class="personItem-container">
             <% personas.forEach(function (value) { %>
                 <li class="personItem">
-                    
                     <div>
                         <div>
                             <div class="review">
@@ -41,78 +40,76 @@
                                                     <label for="review<%= i %>" style="color: #D2D2D2;">★</label>
                                                     <% } %>
                                                         <% } %>
-                                    </span> <p class="rating">
-                                        <%= value.rating %>
-                                    </p>
+                                    </span>
+                                    <p class="rating">
+                <%= value.rating %>
+              </p>
                                 </div>
                             </div>
                         </div>
                         <div class="personInfo">
                             <p class="name"><%= value.username %>さん</p>
-                            <p class="age"><%= value.age %></p>歳
+                            <p class="age"><%= value.age %>歳</p>
                         </div>
                         <p class="reason"><%= value.reason %></p>
                         <div class="personItem-defo">
                             <a href="/edit/<%= value.id %>">更新</a>
                             <a href="/delete/<%= value.id %>">削除</a>
                         </div>
+                    </div>
                 </li>
                 <% }); %>
         </ul>
     </body>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1"></script>
     <script type="text/javascript">
+        const sortSelect = document.getElementById("sort");
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedValue = urlParams.get("sort");
+
+        if (selectedValue) {
+            sortSelect.value = selectedValue;
+        }
+
+        sortSelect.addEventListener("change", function () {
+            const selectedValue = sortSelect.value;
+            if (selectedValue === "1") {
+                const url = new URL(window.location.href);
+                url.searchParams.delete("sort");
+                location.href = url.href;
+            } else {
+                const url = new URL(window.location.href);
+                url.searchParams.set("sort", selectedValue);
+                location.href = url.href;
+            }
+        });
 
         function age() {
             //統計を取る
             let ageStatistics = {};
             let ages = document.querySelectorAll(".age");
+
             ages.forEach(function (age) {
-                let ageNum = age.innerHTML;
-                if (ageNum !== "") {
-                    if (ageStatistics.hasOwnProperty(ageNum)) {
-                        ageStatistics[ageNum]++
+                let ageNum = parseInt(age.innerHTML);
+
+                if (!isNaN(ageNum)) {
+                    let ageGroup = Math.floor(ageNum / 10) * 10;
+
+                    if (ageStatistics.hasOwnProperty(ageGroup)) {
+                        ageStatistics[ageGroup]++;
                     } else {
-                        ageStatistics[ageNum] = 1;
+                        ageStatistics[ageGroup] = 1;
                     }
                 }
             });
-            let ten = 0;
-            let twenty = 0;
-            let thirty = 0;
-            let fourty = 0;
-            let fifty = 0;
-            let sixty = 0;
-            let seventy = 0;
 
-            for (let age in ageStatistics) {
-                if ((Math.floor(Number(age) / 10) * 10) === 10) {
-                    ten += ageStatistics[age];
-                }
-                else if ((Math.floor(Number(age) / 10) * 10) === 20) {
-                    twenty += ageStatistics[age];
-                } else if ((Math.floor(Number(age) / 10) * 10) === 30) {
-                    thirty += ageStatistics[age];
-                } else if ((Math.floor(Number(age) / 10) * 10) === 40) {
-                    fourty += ageStatistics[age];
-                } else if ((Math.floor(Number(age) / 10) * 10) === 50) {
-                    fifty += ageStatistics[age];
-                } else if ((Math.floor(Number(age) / 10) * 10) === 60) {
-                    sixty += ageStatistics[age];
-                } else {
-                    seventy += ageStatistics[age];
-                }
-
-
-            }
-            // console.log("10代:" + ten + "人")
-            // console.log("20代:" + twenty + "人");
-            // console.log("30代:" + thirty + "人");
-            // console.log("40代:" + fourty + "人");
-            // console.log("50代:" + fifty + "人");
-            // console.log("60代:" + sixty + "人");
-            // console.log("70代:" + seventy + "人");
-
+            let ten = ageStatistics[10] || 0;
+            let twenty = ageStatistics[20] || 0;
+            let thirty = ageStatistics[30] || 0;
+            let forty = ageStatistics[40] || 0;
+            let fifty = ageStatistics[50] || 0;
+            let sixty = ageStatistics[60] || 0;
+            let seventy = ageStatistics[70] || 0;
 
             //グラフ
             window.onload = function () {
@@ -123,7 +120,7 @@
                         labels: ["10代", "20代", "30代", "40代", "50代", "60代", "70代以降"],
                         datasets: [{
                             label: "人数",
-                            data: [ten, twenty, thirty, fourty, fifty, sixty, seventy],
+                            data: [ten, twenty, thirty, forty, fifty, sixty, seventy],
                             backgroundColor: ['#4169e1']
                         }],
                     },
@@ -140,84 +137,84 @@
         };
         age();
 
-        //並び替えセレクトボックスにイベント追加
-        let sortContainer = document.getElementsByClassName("sort-container")[0];
-        sortContainer.addEventListener("change", onOrderChanged, false);
+        // //並び替えセレクトボックスにイベント追加
+        // let sortContainer = document.getElementsByClassName("sort-container")[0];
+        // sortContainer.addEventListener("change", onOrderChanged, false);
 
-        //初期表示のレビューリスト
-        let nodeItemsOrg = document.querySelectorAll(".personItem");
+        // //初期表示のレビューリスト
+        // let nodeItemsOrg = document.querySelectorAll(".personItem");
 
-        //レビュー一覧
-        let personItems = document.querySelectorAll(".personItem");
+        // //レビュー一覧
+        // let personItems = document.querySelectorAll(".personItem");
 
-        //並び替え
-        function onOrderChanged(event) {
-            let personItemContainer = document.getElementsByClassName("personItem-container")[0];
-            personItems = document.querySelectorAll(".personItem");
+        // //並び替え
+        // function onOrderChanged(event) {
+        //     let personItemContainer = document.getElementsByClassName("personItem-container")[0];
+        //     personItems = document.querySelectorAll(".personItem");
 
-            let reviews = [];
-            for (let i = 0; i < personItems.length; i++) {
-                reviews.push(personItems[i]);
-            }
+        //     let reviews = [];
+        //     for (let i = 0; i < personItems.length; i++) {
+        //         reviews.push(personItems[i]);
+        //     }
 
-            //セレクトボックスが選択されたら全てのレビューを一度削除
-            while (personItemContainer.firstChild) {
-                personItemContainer.removeChild(personItemContainer.firstChild);
-            }
+        //     //セレクトボックスが選択されたら全てのレビューを一度削除
+        //     while (personItemContainer.firstChild) {
+        //         personItemContainer.removeChild(personItemContainer.firstChild);
+        //     }
 
-            if (event.target.value === "1") {
-                for (let i = 0; i < reviews.length; i++) {
-                    personItemContainer.appendChild(nodeItemsOrg[i]);
-                }
-            }
-            else if (event.target.value === "2") {
-                reviews.sort(function (a, b) {
-                    let ratingA = Number(a.querySelector('.rating').innerHTML);
-                    let ratingB = Number(b.querySelector('.rating').innerHTML);
-                    return ratingB - ratingA;
-                });
-                for (let i = 0; i < reviews.length; i++) {
-                    personItemContainer.appendChild(reviews[i]);
-                }
-            }
-            else if (event.target.value === "3") {
-                reviews.sort(function (a, b) {
-                    let ratingA = Number(a.querySelector('.rating').innerHTML);
-                    let ratingB = Number(b.querySelector('.rating').innerHTML);
-                    return ratingA - ratingB;
-                });
-                for (let i = 0; i < reviews.length; i++) {
-                    personItemContainer.appendChild(reviews[i]);
-                }
-            }
-        }
-
-
-        //並び替えセレクトボックスにイベント追加
-        let filterContainer = document.getElementsByClassName("filter-container")[0];
-        filterContainer.addEventListener("change", onFilterChanged, false);
-        function onFilterChanged(event) {
-            let personItemContainer = document.getElementsByClassName("personItem-container")[0];
-            let selectedRating = Number(event.target.value);
-
-            while (personItemContainer.firstChild) {
-                personItemContainer.removeChild(personItemContainer.firstChild);
-            }
-
-            if (selectedRating === 0) {
-                for (let i = 0; i < nodeItemsOrg.length; i++) {
-                    personItemContainer.appendChild(nodeItemsOrg[i]);
-                }
-            } else {
-                for (let i = 0; i < nodeItemsOrg.length; i++) {
-                    let rating = Number(nodeItemsOrg[i].querySelector('.rating').innerHTML);
-                    if (rating === selectedRating) {
-                        personItemContainer.appendChild(nodeItemsOrg[i]);
-                    }
-                }
-            }
-        }
+        //     if (event.target.value === "1") {
+        //         for (let i = 0; i < reviews.length; i++) {
+        //             personItemContainer.appendChild(nodeItemsOrg[i]);
+        //         }
+        //     }
+        //     else if (event.target.value === "2") {
+        //         reviews.sort(function (a, b) {
+        //             let ratingA = Number(a.querySelector('.rating').innerHTML);
+        //             let ratingB = Number(b.querySelector('.rating').innerHTML);
+        //             return ratingB - ratingA;
+        //         });
+        //         for (let i = 0; i < reviews.length; i++) {
+        //             personItemContainer.appendChild(reviews[i]);
+        //         }
+        //     }
+        //     else if (event.target.value === "3") {
+        //         reviews.sort(function (a, b) {
+        //             let ratingA = Number(a.querySelector('.rating').innerHTML);
+        //             let ratingB = Number(b.querySelector('.rating').innerHTML);
+        //             return ratingA - ratingB;
+        //         });
+        //         for (let i = 0; i < reviews.length; i++) {
+        //             personItemContainer.appendChild(reviews[i]);
+        //         }
+        //     }
+        // }
 
 
-    // </script>
+        // //並び替えセレクトボックスにイベント追加
+        // let filterContainer = document.getElementsByClassName("filter-container")[0];
+        // filterContainer.addEventListener("change", onFilterChanged, false);
+        // function onFilterChanged(event) {
+        //     let personItemContainer = document.getElementsByClassName("personItem-container")[0];
+        //     let selectedRating = Number(event.target.value);
+
+        //     while (personItemContainer.firstChild) {
+        //         personItemContainer.removeChild(personItemContainer.firstChild);
+        //     }
+
+        //     if (selectedRating === 0) {
+        //         for (let i = 0; i < nodeItemsOrg.length; i++) {
+        //             personItemContainer.appendChild(nodeItemsOrg[i]);
+        //         }
+        //     } else {
+        //         for (let i = 0; i < nodeItemsOrg.length; i++) {
+        //             let rating = Number(nodeItemsOrg[i].querySelector('.rating').innerHTML);
+        //             if (rating === selectedRating) {
+        //                 personItemContainer.appendChild(nodeItemsOrg[i]);
+        //             }
+        //         }
+        //     }
+        // }
+
+
+    </script>
 </html>
