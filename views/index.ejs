@@ -41,9 +41,7 @@
                                                     <% } %>
                                                         <% } %>
                                     </span>
-                                    <p class="rating">
-                <%= value.rating %>
-              </p>
+                                    <p class="rating"><%= value.rating %></p>
                                 </div>
                             </div>
                         </div>
@@ -63,24 +61,47 @@
     </body>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1"></script>
     <script type="text/javascript">
-        const sortSelect = document.getElementById("sort");
-        const urlParams = new URLSearchParams(window.location.search);
-        const selectedValue = urlParams.get("sort");
+        let sortSelect = document.getElementById("sort");
+        let urlParams = new URLSearchParams(window.location.search);
+        let selectedValue = urlParams.get("sort");
 
         if (selectedValue) {
             sortSelect.value = selectedValue;
         }
 
         sortSelect.addEventListener("change", function () {
-            const selectedValue = sortSelect.value;
+            let selectedValue = sortSelect.value;
             if (selectedValue === "1") {
-                const url = new URL(window.location.href);
+                let url = new URL(window.location.href);
                 url.searchParams.delete("sort");
                 location.href = url.href;
             } else {
-                const url = new URL(window.location.href);
+                let url = new URL(window.location.href);
                 url.searchParams.set("sort", selectedValue);
                 location.href = url.href;
+            }
+        });
+
+        let filterSelect = document.getElementById("filter");
+        let urlParams2 = new URLSearchParams(window.location.search);
+        let selectedFilter = urlParams2.get("filter");
+        let filterContainer = document.getElementsByClassName("filter-container")[0];
+        let nodeItemsOrg = document.querySelectorAll(".personItem");
+
+        if (selectedFilter) {
+            filterSelect.value = selectedFilter;
+        }
+
+        filterSelect.addEventListener("change", function () {
+            let selectedValue2 = filterSelect.value;
+            if (selectedValue2 === "0") {
+                let url2 = new URL(window.location.href);
+                url2.searchParams.delete("filter");
+                location.href = url2.href;
+            } else {
+                let url2 = new URL(window.location.href);
+                url2.searchParams.set("filter", selectedValue2);
+                location.href = url2.href;
             }
         });
 
