@@ -5,7 +5,9 @@
         <title>User list</title>
         <link type="text/css" rel="stylesheet" href="css/style.css">
     </head>
-    <body> 購入者年代別グラフ <canvas id="stage"></canvas>
+    <body>
+        <h2>商品レビューサイト</h2>
+        <h4> 購入者年代別グラフ </h4><canvas id="stage"></canvas>
         <div class="function">
             <div>
                 <label for="sort">並び替え</label>
@@ -47,7 +49,7 @@
                         </div>
                         <div class="personInfo">
                             <p class="name"><%= value.username %>さん</p>
-                            <p class="age"><%= value.age %>歳</p>
+                            <p class="age"><%= value.age %></p>歳
                         </div>
                         <p class="reason"><%= value.reason %></p>
                         <div class="personItem-defo">
@@ -61,6 +63,7 @@
     </body>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1"></script>
     <script type="text/javascript">
+        //ソート
         let sortSelect = document.getElementById("sort");
         let urlParams = new URLSearchParams(window.location.search);
         let selectedValue = urlParams.get("sort");
@@ -81,12 +84,10 @@
                 location.href = url.href;
             }
         });
-
+        //絞り込み
         let filterSelect = document.getElementById("filter");
         let urlParams2 = new URLSearchParams(window.location.search);
         let selectedFilter = urlParams2.get("filter");
-        let filterContainer = document.getElementsByClassName("filter-container")[0];
-        let nodeItemsOrg = document.querySelectorAll(".personItem");
 
         if (selectedFilter) {
             filterSelect.value = selectedFilter;
@@ -109,28 +110,42 @@
             //統計を取る
             let ageStatistics = {};
             let ages = document.querySelectorAll(".age");
-
             ages.forEach(function (age) {
-                let ageNum = parseInt(age.innerHTML);
-
-                if (!isNaN(ageNum)) {
-                    let ageGroup = Math.floor(ageNum / 10) * 10;
-
-                    if (ageStatistics.hasOwnProperty(ageGroup)) {
-                        ageStatistics[ageGroup]++;
+                let ageNum = age.innerHTML;
+                if (ageNum !== "") {
+                    if (ageStatistics.hasOwnProperty(ageNum)) {
+                        ageStatistics[ageNum]++
                     } else {
-                        ageStatistics[ageGroup] = 1;
+                        ageStatistics[ageNum] = 1;
                     }
                 }
             });
-
-            let ten = ageStatistics[10] || 0;
-            let twenty = ageStatistics[20] || 0;
-            let thirty = ageStatistics[30] || 0;
-            let forty = ageStatistics[40] || 0;
-            let fifty = ageStatistics[50] || 0;
-            let sixty = ageStatistics[60] || 0;
-            let seventy = ageStatistics[70] || 0;
+            let ten = 0;
+            let twenty = 0;
+            let thirty = 0;
+            let forty = 0;
+            let fifty = 0;
+            let sixty = 0;
+            let seventy = 0;
+            for (let age in ageStatistics) {
+                if ((Math.floor(Number(age) / 10) * 10) === 10) {
+                    ten += ageStatistics[age];
+                }
+                else if ((Math.floor(Number(age) / 10) * 10) === 20) {
+                    twenty += ageStatistics[age];
+                } else if ((Math.floor(Number(age) / 10) * 10) === 30) {
+                    thirty += ageStatistics[age];
+                } else if ((Math.floor(Number(age) / 10) * 10) === 40) {
+                    forty += ageStatistics[age];
+                } else if ((Math.floor(Number(age) / 10) * 10) === 50) {
+                    fifty += ageStatistics[age];
+                } else if ((Math.floor(Number(age) / 10) * 10) === 60) {
+                    sixty += ageStatistics[age];
+                }
+                else {
+                    seventy += ageStatistics[age];
+                }
+            }
 
             //グラフ
             window.onload = function () {
@@ -149,7 +164,7 @@
                         scales: {
                             y: {
                                 min: 0,
-                                max: 100,
+                                max: 80,
                             }
                         },
                     }

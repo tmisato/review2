@@ -43,7 +43,6 @@ app.get("/", function (req, res) {
 
     con.query(sql, function (err, result, fields) {
       if (err) console.error(err);
-
       res.render("index", { personas: result });
     });
   });
