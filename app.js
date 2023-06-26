@@ -25,28 +25,13 @@ app.get("/", function (req, res) {
     if (err) throw err;
     console.log("Connected");
 
-    const selectedValue2 = req.query.filter;
-    let sql = "SELECT * FROM personas";
-
-    if (selectedValue2 && selectedValue2 !== "0") {
-      sql += " WHERE rating = '" + selectedValue2 + "'";
-    }
-
-    con.query(sql, function (err, result, fields) {
-      if (err) console.error(err);
-
-      res.render("index", { personas: result });
-    });
-  });
-});
-
-app.get("/", function (req, res) {
-  con.connect(function (err) {
-    if (err) throw err;
-    console.log("Connected");
-
     const selectedValue = req.query.sort;
+    const selectedFilter = req.query.filter;
     let sql = "SELECT * FROM personas";
+
+    if (selectedFilter && selectedFilter !== "0") {
+      sql += " WHERE rating = '" + selectedFilter + "'";
+    }
 
     if (selectedValue === "2") {
       sql += " ORDER BY rating DESC";
@@ -58,30 +43,9 @@ app.get("/", function (req, res) {
 
     con.query(sql, function (err, result, fields) {
       if (err) console.error(err);
-      // console.log(result);
 
-      // 評価が高い順で並び替え
-      if (selectedValue === "2") {
-        result.sort(function (a, b) {
-          return b.rating - a.rating;
-        });
-      }
-      // 評価が高い順で並び替え
-      if (selectedValue === "3") {
-        result.sort(function (a, b) {
-          return a.rating - b.rating;
-        });
-      }
       res.render("index", { personas: result });
     });
-  });
-});
-
-app.get("/", (req, res) => {
-  const sql = "select * from personas";
-  con.query(sql, function (err, result, fields) {
-    if (err) throw err;
-    res.render("index", { personas: result });
   });
 });
 
